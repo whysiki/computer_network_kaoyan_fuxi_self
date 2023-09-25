@@ -1,8 +1,10 @@
 import numpy
-import typing
+
+# import typing
 import cv2
 import imageio
-from tqdm import tqdm
+
+# from tqdm import tqdm
 
 
 def en_faster_git_speed(filepath: str, outputpath: str) -> None:
