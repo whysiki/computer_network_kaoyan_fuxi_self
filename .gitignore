@@ -4,3 +4,6 @@
 /pypackages-info
 /.vs
 /.venv
+/.vscode
+/bdwp_patch_speed
+/otherUseless
