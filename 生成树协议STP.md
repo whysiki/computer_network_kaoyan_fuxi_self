@@ -29,5 +29,5 @@
 
 ## 原理
 
-![Alt text](image.png)
+
 
