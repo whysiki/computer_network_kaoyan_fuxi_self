@@ -58,7 +58,8 @@
   "C_Cpp.default.cStandard": "c23",
   "C_Cpp.default.intelliSenseMode": "gcc-x86",
   "editor.tokenColorCustomizations": {
-    "comments": "",
+    "comments": "#7a5454",
     "textMateRules": []
   }
+  // "C_Cpp.intelliSenseCache":""
 }
