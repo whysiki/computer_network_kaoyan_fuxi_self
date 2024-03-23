@@ -1,0 +1,67 @@
+<!-- vote.html -->
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Polls</title>
+    
+    <link rel="stylesheet" href="/static/polls/css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      
+        <h1>Test question</h1>
+
+        <!-- 如果有错误消息，则显示 -->
+        
+          <p>
+            <strong>You didn&#x27;t select a choice.</strong>
+          </p>
+        
+
+        <!-- 如果投票结果为空，则显示投票表单 -->
+        
+          <form action="/1/vote/" method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="pSOwQvGlyIy30A4PxuLVi70JkC119sI49MVPpg9vkaGM0ZZ3M9GKlzBp7IZdwXiq">
+            
+              <div class="choice-card">
+                <input type="radio" name="choice" id="choice1" value="1" />
+                <label for="choice1">Choice</label>
+              </div>
+            
+            <input type="submit" value="Vote" />
+          </form>
+        
+
+        
+
+        
+
+        <!-- 如果已有投票结果，则显示结果 -->
+        
+          <div class="result-section">
+            <h2>Results</h2>
+            <ul>
+              
+                <li>
+                  <div class="bar-container">
+                    <span class="choice-text">Choice</span>
+                    <div class="bar" style="--choice-votes: 0%;"></div>
+                  </div>
+                  <span class="vote-count">0 votes</span>
+                </li>
+              
+            </ul>
+            <div class="button-container">
+              <a href="/" class="home-button">Return Home</a>
+            </div>
+          </div>
+        
+        
+        
+
+        
+      
+    </div>
+  </body>
+</html>

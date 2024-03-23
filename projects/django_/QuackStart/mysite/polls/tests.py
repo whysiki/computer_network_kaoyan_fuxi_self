@@ -6,8 +6,12 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import Question
+from .models import Question, Choice, SubmittedIP
 from django.urls import reverse
+from django.http import HttpRequest
+from polls.views import vote  # 导入 vote 函数
+import webbrowser
+from unittest.mock import patch
 
 
 # python manage.py test polls
@@ -133,3 +137,172 @@ class QuestionDetailViewTests(TestCase):
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
         # 断言响应表明成功检索了某些内容(即HTTP状态码符合预期)，并且文本在响应的内容中出现了计数次。如果count为None，则计数无关紧要—如果文本在响应中至少出现一次，则断言为真。
+
+
+class VoteViewTests(TestCase):
+    def test_duplicate_vote(self):
+        # 创建一个问题
+        question = Question.objects.create(
+            question_text="Test question", pub_date=timezone.now()
+        )
+        # 创建两个选项
+        choice1 = Choice.objects.create(question=question, choice_text="Choice 1")
+        choice2 = Choice.objects.create(question=question, choice_text="Choice 2")
+
+        # 模拟一个用户投票
+        response = self.client.post(
+            reverse("polls:vote", args=(question.id,)), {"choice": choice1.id}  # type: ignore
+        )
+        self.assertEqual(response.status_code, 302)  # 应该重定向到结果页面
+
+        # 再次尝试使用相同的选项和IP地址进行投票
+        response = self.client.post(
+            reverse("polls:vote", args=(question.id,)), {"choice": choice1.id}  # type: ignore
+        )
+        self.assertContains(response, "You have already voted for this question.")
+
+    def test_successful_vote(self):
+        # 创建一个问题
+        question = Question.objects.create(
+            question_text="Test question", pub_date=timezone.now()
+        )
+        # 创建一个选项
+        choice = Choice.objects.create(question=question, choice_text="Choice")
+
+        # 模拟一个用户投票
+        response = self.client.post(
+            reverse("polls:vote", args=(question.id,)), {"choice": choice.id}  # type: ignore
+        )
+        self.assertEqual(response.status_code, 302)  # 应该重定向到结果页面
+
+        # # 检查是否返回了正确的错误消息
+        # self.assertEqual(response.status_code, 200)  # 应该是正常的请求成功
+        # self.assertContains(response, "You didn't select a choice.")
+
+    @patch("polls.views.render")
+    def test_no_choice_selected(self, mock_render):
+        # 创建一个问题
+        question = Question.objects.create(
+            question_text="Test question", pub_date=timezone.now()
+        )
+        # 创建一个选项
+        choice = Choice.objects.create(question=question, choice_text="Choice")
+
+        # 模拟一个POST请求，但没有提供选项的选择
+        request = HttpRequest()
+        request.method = "POST"
+        response = vote(request, question.id)  # type: ignore
+
+        # 检查是否调用了 render 函数，并且错误消息正确传递给了模板
+        mock_render.assert_called_once_with(
+            request,
+            "polls/all.html",
+            {"question": question, "error_message": "You didn't select a choice."},
+        )
+
+        # print(f"测试成功test_no_choice_selected")
+
+    # def test_no_choice_selected(self):
+    #     # 创建一个问题
+    #     question = Question.objects.create(
+    #         question_text="Test question", pub_date=timezone.now()
+    #     )
+    #     # 创建一个选项
+    #     choice = Choice.objects.create(question=question, choice_text="Choice")
+
+    #     # 模拟一个POST请求，但没有提供选项的选择
+    #     request = HttpRequest()
+    #     request.method = "POST"
+    #     # request.POST["choice"] = ""  # 不提供选项的选择
+    #     response = vote(request, question.id)  # type: ignore
+
+    #     # 检查是否返回了正确的错误消息
+    #     self.assertEqual(response.status_code, 200)  # 应该是正常的请求成功
+
+    #     html_string = response.content.decode()
+    #     with open("temp.html", "w") as f:
+    #         f.write(html_string)
+
+    #     webbrowser.open("temp.html")
+
+    #     self.assertContains(response, "You didn't select a choice.")
+
+
+# self.assertContains(
+#     response, "You didn't select a choice."
+# )  # 检查页面内容是否包含错误消息
+
+# print(response.json())
+# self.assertContains(response, "You didn't select a choice.")
+
+# You didn't select a choice.
+
+# def test_choice_not_exist(self):
+#     # 创建一个问题
+#     question = Question.objects.create(
+#         question_text="Test question", pub_date=timezone.now()
+#     )
+
+#     # 模拟一个POST请求，但选择了不存在的选项
+#     request = HttpRequest()
+#     request.method = "POST"
+#     request.POST["choice"] = "999"  # 选择一个不存在的选项
+#     response = vote(request, question.id)  # type: ignore
+
+#     # 检查是否返回了正确的错误消息
+#     self.assertEqual(response.status_code, 200)  # 应该是正常的请求成功
+#     self.assertContains(response, "You didn't select a choice.")
+
+
+# def test_no_choice_selected(self):
+#     # 创建一个问题
+#     question = Question.objects.create(
+#         question_text="Test question", pub_date=timezone.now()
+#     )
+#     # 创建一个选项
+#     choice = Choice.objects.create(question=question, choice_text="Choice")
+
+#     # 模拟一个用户未选择选项就尝试投票
+#     response = self.client.post(reverse("polls:vote", args=(question.id,)), {})  # type: ignore
+
+#     # 检查是否返回了正确的错误消息
+#     self.assertEqual(response.status_code, 200)  # 应该是正常的请求成功
+#     self.assertContains(response, "You didn't select a choice.")
+
+#     # 创建一个问题
+#     question = Question.objects.create(
+#         question_text="Test question", pub_date=timezone.now()
+#     )
+#     # 创建一个选项
+#     choice = Choice.objects.create(question=question, choice_text="Choice")
+
+#     # 模拟一个POST请求，但没有提供选项的选择
+#     request = HttpRequest()
+#     request.method = "POST"
+#     request.POST["choice"] = ""  # 不提供选项的选择
+#     response = vote(request, question.id)
+
+#     # 检查是否返回了正确的错误消息
+#     self.assertEqual(response.status_code, 200)  # 应该是正常的请求成功
+#     self.assertContains(response, "You didn't select a choice.")
+
+# def test_no_choice_selected(self):
+#     # 创建一个问题
+#     question = Question.objects.create(
+#         question_text="Test question", pub_date=timezone.now()
+#     )
+#     # 创建一个选项
+#     choice = Choice.objects.create(question=question, choice_text="Choice")
+
+#     # 模拟一个用户未选择选项就尝试投票
+#     response = self.client.post(reverse("polls:vote", args=(question.id,)), {})  # type: ignore
+#     print(response)
+#     self.assertContains(
+#         response, "You didn't select a choice."
+#     )  # "You didn't select a choice."
+# Assert that a response indicates that some content was retrieved successfully,
+# (i.e., the HTTP status code was as expected) and that text occurs count times in the content of the response.
+# If count is None, the count doesn't matter - the assertion is true if the text occurs at least once in the response.
+# 断言响应表明某些内容被成功检索
+# (即HTTP状态码与预期一致)，并且该文本在响应内容中出现了计数次。
+# 如果count为None，则计数无关紧要—如果文本在响应中至少出现一次，则断言为真。

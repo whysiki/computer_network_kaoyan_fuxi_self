@@ -3,7 +3,7 @@
 # from re import template
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-from .models import Question, Choice
+from .models import Question, Choice, SubmittedIP
 from django.template import loader
 from django.db.models import F
 from django.urls import reverse
@@ -103,44 +103,112 @@ class ResultsView(generic.DetailView):
     template_name = "polls/all.html"
 
 
-def vote(request, question_id) -> HttpResponse:
-    # return HttpResponse("You're voting on question %s." % question_id)
-
+def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
+    ip_address = request.META.get("REMOTE_ADDR")
     try:
-        # type: ignore
-        selected_choice = question.choice_set.get(pk=request.POST["choice"])  # type: ignore
-        # request.POST 是一个类字典对象，让你可以通过关键字的名字获取提交的数据。 这个例子中， request.POST['choice'] 以字符串形式返回选择的 Choice 的 ID。 request.POST 的值永远是字符串。
-
-        # 注意，Django 还以同样的方式提供 request.GET 用于访问 GET 数据 —— 但我们在代码中显式地使用 request.POST ，以保证数据只能通过 POST 调用改动。
-
-        # 如果在 request.POST['choice'] 数据中没有提供 choice ， POST 将引发一个 KeyError 。上面的代码检查 KeyError ，如果没有给出 choice 将重新显示 Question 表单和一个错误信息。
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
+        # 检查IP地址是否已经对此问题进行了投票
+        # 查找具有指定问题和IP地址的 SubmittedIP 对象。如果找到了这样的对象，它将被赋值给变量 submitted_ip，否则将引发 SubmittedIP.DoesNotExist 异常。
+        submitted_ip = SubmittedIP.objects.get(question=question, ip_address=ip_address)
         return render(
             request,
-            # "polls/detail.html",
             "polls/all.html",
             {
                 "question": question,
-                "error_message": "You didn't select a choice.",
+                "error_message": "You have already voted for this question.",
             },
         )
-    else:
-        # else 语句在 try 语句中没有引发异常时执行，用于执行正常的逻辑，例如，如果需要在没有异常发生时执行某些代码。
-        # finally 语句（可选）在无论异常是否发生都执行，通常用于执行清理操作，比如关闭文件或释放资源。
-        selected_choice.votes = F("votes") + 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))  # type: ignore
-        # 正如上面的 Python 注释指出的，在成功处理 POST 数据后，你应该总是返回一个 HttpResponseRedirect。这不是 Django 的特殊要求，这是那些优秀网站在开发实践中形成的共识。
+    except SubmittedIP.DoesNotExist:
 
-        # 在这个例子中，我们在 HttpResponseRedirect 的构造函数中使用 reverse() 函数。这个函数避免了我们在视图函数中硬编码 URL。它需要我们给出我们想要跳转的视图的名字和该视图所对应的 URL 模式中需要给该视图提供的参数。 在本例中，使用在 教程第 3 部分 中设定的 URLconf， reverse() 调用将返回一个这样的字符串：
+        try:
+            selected_choice = question.choice_set.get(pk=request.POST["choice"])  # type: ignore
+        except (KeyError, Choice.DoesNotExist):
+            return render(
+                request,
+                "polls/all.html",
+                {
+                    "question": question,
+                    "error_message": "You didn't select a choice.",
+                },
+            )
+        else:
+            # 增加选项的投票数，并记录IP地址投票信息
+            selected_choice.votes = F("votes") + 1
+            selected_choice.save()
+            SubmittedIP.objects.create(question=question, ip_address=ip_address)
+            # 创建一个新的 SubmittedIP 对象，并将其与特定的问题和 IP 地址关联，然后将其保存到数据库中。
+            return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))  # type: ignore
+            # return render(request, "polls/all.html", {"question": question})
+            # 重定向返回的状态码是302
 
-        # "/polls/3/results/"
-        # 其中 3 是 question.id 的值。重定向的 URL 将调用 'results' 视图来显示最终的页面。
+
+# if "choice" not in request.POST:
+#     # 如果用户未选择选项或者提交空值，则返回错误消息
+#     return render(
+#         request,
+#         "polls/all.html",
+#         {
+#             "question": question,
+#             "error_message": "You didn't select a choice.",
+#         },
+#     )
+
+
+# def vote(request, question_id) -> HttpResponse:
+#     question = get_object_or_404(Question, pk=question_id)
+#     try:
+#         selected_choice = question.choice_set.get(pk=request.POST["choice"])  # type: ignore
+#     except (KeyError, Choice.DoesNotExist):
+#         return render(
+#             request,
+#             "polls/all.html",
+#             {
+#                 "question": question,
+#                 "error_message": "You didn't select a choice.",
+#             },
+#         )
+#     else:
+#         selected_choice.votes = F("votes") + 1
+#         selected_choice.save()
+#         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))  # type: ignore
+
+
+# def vote(request, question_id) -> HttpResponse:
+#     # return HttpResponse("You're voting on question %s." % question_id)
+
+#     question = get_object_or_404(Question, pk=question_id)
+#     try:
+#         # type: ignore
+#         selected_choice = question.choice_set.get(pk=request.POST["choice"])  # type: ignore
+#         # request.POST 是一个类字典对象，让你可以通过关键字的名字获取提交的数据。 这个例子中， request.POST['choice'] 以字符串形式返回选择的 Choice 的 ID。 request.POST 的值永远是字符串。
+#         # 注意，Django 还以同样的方式提供 request.GET 用于访问 GET 数据 —— 但我们在代码中显式地使用 request.POST ，以保证数据只能通过 POST 调用改动。
+#         # 如果在 request.POST['choice'] 数据中没有提供 choice ， POST 将引发一个 KeyError 。上面的代码检查 KeyError ，如果没有给出 choice 将重新显示 Question 表单和一个错误信息。
+#     except (KeyError, Choice.DoesNotExist):
+#         # Redisplay the question voting form.
+#         return render(
+#             request,
+#             # "polls/detail.html",
+#             "polls/all.html",
+#             {
+#                 "question": question,
+#                 "error_message": "You didn't select a choice.",
+#             },
+#         )
+#     else:
+#         # else 语句在 try 语句中没有引发异常时执行，用于执行正常的逻辑，例如，如果需要在没有异常发生时执行某些代码。
+#         # finally 语句（可选）在无论异常是否发生都执行，通常用于执行清理操作，比如关闭文件或释放资源。
+#         selected_choice.votes = F("votes") + 1
+#         selected_choice.save()
+#         # Always return an HttpResponseRedirect after successfully dealing
+#         # with POST data. This prevents data from being posted twice if a
+#         # user hits the Back button.
+#         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))  # type: ignore
+#         # 正如上面的 Python 注释指出的，在成功处理 POST 数据后，你应该总是返回一个 HttpResponseRedirect。这不是 Django 的特殊要求，这是那些优秀网站在开发实践中形成的共识。
+
+#         # 在这个例子中，我们在 HttpResponseRedirect 的构造函数中使用 reverse() 函数。这个函数避免了我们在视图函数中硬编码 URL。它需要我们给出我们想要跳转的视图的名字和该视图所对应的 URL 模式中需要给该视图提供的参数。 在本例中，使用在 教程第 3 部分 中设定的 URLconf， reverse() 调用将返回一个这样的字符串：
+
+#         # "/polls/3/results/"
+#         # 其中 3 是 question.id 的值。重定向的 URL 将调用 'results' 视图来显示最终的页面。
 
 
 # 这是 Django 中最简单的视图。如果想看见效果，我们需要将一个 URL 映射到它——这就是我们需要 URLconf 的原因了。
