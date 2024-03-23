@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vote Form</title>
+  </head>
+  <body>
+    <h1>Vote Form</h1>
+    <form action="/polls/vote/" method="post">
+      <input type="hidden" name="csrfmiddlewaretoken" value="..." />
+      <fieldset>
+        <legend>Question Text</legend>
+        <p><strong>Error Message</strong></p>
+        <input type="radio" name="choice" id="choice1" value="1" />
+        <label for="choice1">Choice 1</label><br />
+        <input type="radio" name="choice" id="choice2" value="2" />
+        <label for="choice2">Choice 2</label><br />
+      </fieldset>
+      <input type="submit" value="Vote" />
+    </form>
+  </body>
+</html>

@@ -1,0 +1,235 @@
+/* Reset CSS */
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+li,
+form,
+fieldset,
+legend,
+input,
+textarea,
+button {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-image: url("../image/background2.jpg");
+  background-size: cover;
+  background-position: center;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  /* transition: opacity 1s ease-in-out; */
+}
+
+.container {
+  max-width: 800px;
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  color: #007bff;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+li {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  background-color: #f8f9fa;
+  transition: transform 0.3s ease-in-out;
+}
+
+li:hover {
+  transform: translateY(-5px);
+  background-color: #93c6fc;
+  color: #fff;
+}
+
+.bar {
+  background-color: #007bff;
+  height: 20px;
+  margin-bottom: 5px;
+  border-radius: 8px;
+}
+
+.bar span {
+  display: inline-block;
+  background-color: #a63838;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.choice-text {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.vote-count {
+  color: #666;
+  font-size: 14px;
+}
+
+a {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+  transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+/* 表单页面的 CSS 样式 */
+form {
+  background-color: #ffffff;
+  border-radius: 30px;
+  padding: 20px;
+  padding-bottom: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto; /* 将左右外边距设置为 auto，使其水平居中 */
+}
+
+legend {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+p {
+  color: #dc3545;
+  text-align: center;
+  margin: 0;
+}
+
+form fieldset {
+  border-radius: 30px;
+}
+
+.choice-card {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 30px;
+  margin-bottom: 10px;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  transition: border-color 0.3s ease-in-out;
+}
+
+input[type="radio"]:hover {
+  transform: scale(1.1);
+}
+
+input[type="radio"]:checked {
+  border-color: #007bff;
+  background-color: #007bff;
+}
+
+input[type="submit"] {
+  background-color: #00a6ff;
+  color: #ffffff;
+  padding: 15px 35px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  display: block;
+  margin: 20px auto;
+  transition: background-color 0.3s ease-in-out;
+}
+
+input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* 在 CSS 文件中定义自定义属性 */
+:root {
+  --choice-votes: 0;
+}
+
+div.bar {
+  width: calc(var(--choice-votes) * 0.7);
+}
+
+.question-text li {
+  list-style: none;
+  position: relative;
+}
+
+.question-text li a {
+  padding-bottom: 2%;
+}
+
+.question-text .icon {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  background: url("../image/letter-q.png") no-repeat;
+  background-size: cover;
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 5px;
+}
+
+.button-container {
+  text-align: center; /* 水平居中按钮容器中的内容 */
+}
+
+.home-button {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 25px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 30px;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.home-button:hover {
+  background-color: #45a049;
+}

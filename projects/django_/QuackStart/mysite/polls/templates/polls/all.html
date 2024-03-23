@@ -1,0 +1,84 @@
+<!-- vote.html -->
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Polls</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'polls/css/styles.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      {% if question %}
+        <h1>{{ question.question_text }}</h1>
+
+        <!-- 如果有错误消息，则显示 -->
+        {% if error_message %}
+          <p>
+            <strong>{{ error_message }}</strong>
+          </p>
+        {% endif %}
+
+        <!-- 如果投票结果为空，则显示投票表单 -->
+        {% if not question.choice_set.all %}
+          <p>No choices available.</p>
+        {% else %}
+          <form action="{% url 'polls:vote' question.id %}" method="post">
+            {% csrf_token %}
+            {% for choice in question.choice_set.all %}
+              <div class="choice-card">
+                <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+              </div>
+            {% endfor %}
+            <input type="submit" value="Vote" />
+          </form>
+        {% endif %}
+
+        <!-- 如果已有投票结果，则显示结果 -->
+        {% if question.choice_set.all %}
+          <div class="result-section">
+            <h2>Results</h2>
+            <ul>
+              {% for choice in question.choice_set.all %}
+                <li>
+                  <div class="bar-container">
+                    <span class="choice-text">{{ choice.choice_text }}</span>
+                    <div class="bar" style="--choice-votes: {{ choice.votes }}%;"></div>
+                  </div>
+                  <span class="vote-count">{{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+            <div class="button-container">
+              <a href="{% url 'polls:index' %}" class="home-button">Return Home</a>
+            </div>
+          </div>
+        {% endif %}
+        {% comment %} {% endcomment %}
+        {% comment %} {% endcomment %}
+
+        {% comment %} {% endcomment %}
+      {% else %}
+        <h1>Questions</h1>
+        {% if latest_question_list %}
+          <ul>
+            {% for question in latest_question_list %}
+              <div class="card">
+                <div class="question">
+                  <div class="question-text">
+                    <li>
+                      <a href="{% url 'polls:detail' question.id %}"><span class="icon"></span>{{ question.question_text }}</a>
+                    </li>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="no-polls">No polls are available.</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </body>
+</html>
