@@ -1,4 +1,4 @@
-python manage.py migrate
+python ../manage.py migrate
 
 @REM Operations to perform:
 @REM   Apply all migrations: admin, auth, contenttypes, sessions

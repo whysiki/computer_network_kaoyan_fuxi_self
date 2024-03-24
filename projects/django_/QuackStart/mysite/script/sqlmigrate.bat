@@ -1,4 +1,4 @@
-python manage.py sqlmigrate polls 0001
+python ../manage.py sqlmigrate polls 0001
 
 
 @REM 让我们看看迁移命令会执行哪些 SQL 语句。sqlmigrate 命令接收一个迁移的名称，然后返回对应的 SQL：

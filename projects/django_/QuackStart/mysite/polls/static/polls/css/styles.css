@@ -189,7 +189,7 @@ input[type="submit"]:hover {
 }
 
 div.bar {
-  width: calc(var(--choice-votes) * 2);
+  width: calc(var(--choice-votes) * 1);
 }
 
 .question-text li {

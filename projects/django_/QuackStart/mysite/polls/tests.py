@@ -10,7 +10,8 @@ from .models import Question, Choice, SubmittedIP
 from django.urls import reverse
 from django.http import HttpRequest
 from polls.views import vote  # 导入 vote 函数
-import webbrowser
+
+# import webbrowser
 from unittest.mock import patch
 
 

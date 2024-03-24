@@ -1,5 +1,5 @@
 @REM python manage.py makemigrations polls
-python manage.py makemigrations polls && python manage.py migrate
+python ../manage.py makemigrations polls && python ../manage.py migrate
 
 @REM Migrations for 'polls':
 @REM   polls\migrations\0001_initial.py

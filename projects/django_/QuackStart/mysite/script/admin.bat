@@ -1,7 +1,7 @@
 @REM 创建一个管理员账号¶
 @REM 首先，我们得创建一个能登录管理页面的用户。请运行下面的命令：
 
-python manage.py createsuperuser
+python ../manage.py createsuperuser
 
 
 @REM 键入你想要使用的用户名，然后按下回车键：
