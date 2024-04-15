@@ -2,23 +2,21 @@
 
 它是 Windows PowerShell 4.0 版本引入的。该命令用于执行各种网络连接测试，包括测试端口的可达性、路由跟踪、以及使用 PowerShell Remoting 进行连接等。以下是 `Test-NetConnection` 命令的基本用法和参数解释：
 
-
-
-Test-NetConnection -ComputerName -UdpTest example.com  -Port 80
-
+Test-NetConnection -ComputerName -UdpTest example.com -Port 80
 
 ### 基本用法：
 
 ```powershell
 Test-NetConnection -ComputerName <目标计算机> -Port <端口号>
 ```
- ⚡S ❯❯ Get-Help Test-NetConnection
+
+⚡S ❯❯ Get-Help Test-NetConnection
 
 名称
-    Test-NetConnection
+Test-NetConnection
 
 语法
-    Test-NetConnection [[-ComputerName] <string>]  [<CommonParameters>]
+Test-NetConnection [[-ComputerName] <string>] [<CommonParameters>]
 
     Test-NetConnection [[-ComputerName] <string>] [-CommonTCPPort] {HTTP | RDP | SMB | WINRM}  [<CommonParameters>]
 
@@ -26,16 +24,25 @@ Test-NetConnection -ComputerName <目标计算机> -Port <端口号>
 
     Test-NetConnection [[-ComputerName] <string>]  [<CommonParameters>]
 
-
 别名
-    TNC
-
+TNC
 
 备注
-    Get-Help 无法在此计算机上找到此 cmdlet 的帮助文件。只能显示部分帮助。
-        -- 若要下载和安装包含此 cmdlet 的模块的帮助文件，请使用 Update-Help。
+Get-Help 无法在此计算机上找到此 cmdlet 的帮助文件。只能显示部分帮助。
+-- 若要下载和安装包含此 cmdlet 的模块的帮助文件，请使用 Update-Help。
 
+### 使用实例
 
+```powershell
+PS C:\Users\Administrator> Test-NetConnection -ComputerName example.com -Port 80
+
+ComputerName     : example.com
+RemoteAddress    : 93.184.216.34
+RemotePort       : 80
+InterfaceAlias   : WLAN
+SourceAddress    : 192.168.100.222
+TcpTestSucceeded : True
+```
 
 <!-- `Test-NetConnection` 命令的语法如下：
 
@@ -86,16 +93,6 @@ Test-NetConnection [[-ComputerName] <string>] [-CommonTCPPort] {HTTP | RDP | SMB
    这将测试本地计算机的 Windows 远程管理服务（WINRM）连接。
 
 总的来说，`Test-NetConnection` 是一个用于测试网络连接的方便工具，可以在 PowerShell 环境中轻松执行。通过选择目标计算机和要测试的服务端口，你可以检查网络连接的可用性和端口的开放状态。 -->
-
-
-
-
-
-
-
-
-
-
 
 <!-- ### 参数解释：
 
