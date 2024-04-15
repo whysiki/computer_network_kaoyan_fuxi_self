@@ -7,6 +7,7 @@ def get_all_files(path):
     for root, dirs, files in os.walk(path):
         for file in files:
             all_files.append(os.path.join(root, file))
+            # print("文件：", os.path.join(root, file))
     return all_files
 
 # 2. 获取所有pdf文件
