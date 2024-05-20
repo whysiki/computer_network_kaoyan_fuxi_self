@@ -11,7 +11,7 @@ IEEE 802.1Q 是一种用于虚拟局域网（VLAN）标记的协议，
 802.1Q标记是在以太网帧头部添加的额外的4个字节，其格式如下：
 
 - **TPID（Tag Protocol Identifier）：** 占两个字节，用于指示后面的帧是802.1Q帧。其值是0x8100。
-- **T/C（Tag Control）：** 占两个字节，包含优先级（3 bits）、CFI（Canonical Format Identifier，1 bit）、和 VLAN ID（12 bits）。
+- **T/C（Tag Control）：** 占两个字节，包含优先级（3 bits）0-7 一共8位优先级、CFI（Canonical Format Identifier，1 bit）、和 VLAN ID（12 bits）。
 
 整个802.1Q标记的结构如下：
 
@@ -26,6 +26,8 @@ IEEE 802.1Q 是一种用于虚拟局域网（VLAN）标记的协议，
 VLAN ID（VLAN标识符）是12位字段，允许定义最多4096个不同的VLAN。
 
 其中，VLAN ID 0和4095有特殊用途，0表示默认的VLAN，而4095表示全局保留。
+
+一共4094个可用
 
 ### 3. **帧的处理过程：**
 

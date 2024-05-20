@@ -4,6 +4,8 @@
 
 ## 1. source-wildcard
 
+与子网掩码按位取反
+
 ![1697539246768](image/华为ACL配置/1697539246768.png)
 
 ## 2. ACL规则匹配顺序
@@ -97,13 +99,11 @@ acl 2000
 
 acl 2000 match-order auto
 
-
 ```
 [Switch] acl 3001
 [Switch-acl-adv-3001] rule deny ip source 10.1.1.0 0.0.0.255 destination 10.1.2.0 0.0.0.255  //禁止研发部访问市场部
 [Switch-acl-adv-3001] quit
 ```
-
 
 3. **创建acl规则**
 
